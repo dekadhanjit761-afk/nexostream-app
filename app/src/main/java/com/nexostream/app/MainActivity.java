@@ -281,9 +281,9 @@ public class MainActivity extends AppCompatActivity {
             blockedHosts.add("popads.net");
             blockedHosts.add("adsterra.com");
 
-            if (uBlockEnabled) downloadFilterList("https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/badware.txt");[cite: 1]
-            if (easyListEnabled) downloadFilterList("https://easylist.to/easylist/easylist.txt");[cite: 1]
-            if (privacyEnabled) downloadFilterList("https://easylist.to/easylist/easyprivacy.txt");[cite: 1]
+            if (uBlockEnabled) downloadFilterList("https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/badware.txt");
+            if (easyListEnabled) downloadFilterList("https://easylist.to/easylist/easylist.txt");
+            if (privacyEnabled) downloadFilterList("https://easylist.to/easylist/easyprivacy.txt");
         }).start();
     }
 
