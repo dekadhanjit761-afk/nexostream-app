@@ -3,7 +3,7 @@
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0f0f12">
+    android:background="#000000">
 
     <!-- Main WebView -->
     <WebView
@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- Fullscreen Video Container -->
+    <!-- Pure Fullscreen Video Container -->
     <FrameLayout
         android:id="@+id/custom_view_container"
         android:layout_width="match_parent"
@@ -19,17 +19,19 @@
         android:background="#000000"
         android:visibility="gone" />
 
-    <!-- Draggable Floating Shield Button -->
-    <FrameLayout
+    <!-- Compact Sleek Shield Button (34dp) -->
+    <ImageView
         android:id="@+id/fab_shield"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="80dp"
-        android:background="@drawable/ic_launcher"
-        android:elevation="10dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="70dp"
+        android:background="#cc16161a"
+        android:src="@drawable/ic_shield"
+        android:padding="7dp"
+        android:elevation="8dp"
         android:clickable="true"
         android:focusable="true" />
 
