@@ -3,8 +3,10 @@ package com.nexostream.app;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -19,6 +22,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout customViewContainer;
     private View customView;
     private WebChromeClient.CustomViewCallback customViewCallback;
-    private View fabShield;
+    private ImageView fabShield;
 
     private static final String ALLOWED_DOMAIN = "streambydhanjit.vercel.app";
     private final Set<String> blockedHosts = new HashSet<>();
@@ -97,19 +101,28 @@ public class MainActivity extends AppCompatActivity {
                 }
                 customView = view;
                 customViewCallback = callback;
+
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                enableEdgeToEdgeImmersiveMode();
+
                 customViewContainer.addView(view);
                 customViewContainer.setVisibility(View.VISIBLE);
                 webView.setVisibility(View.GONE);
-                fabShield.setVisibility(View.GONE); // Fullscreen me floating button hide hoga
+                fabShield.setVisibility(View.GONE);
             }
 
             @Override
             public void onHideCustomView() {
                 if (customView == null) return;
+
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                exitImmersiveMode();
+
                 customViewContainer.removeView(customView);
                 customViewContainer.setVisibility(View.GONE);
                 webView.setVisibility(View.VISIBLE);
-                fabShield.setVisibility(View.VISIBLE); // Fullscreen exit hote hi button wapas show hoga
+                fabShield.setVisibility(View.VISIBLE);
+
                 if (customViewCallback != null) customViewCallback.onCustomViewHidden();
                 customView = null;
             }
@@ -122,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                 if (host != null && (host.contains(ALLOWED_DOMAIN) || host.contains("vercel.app") || host.contains("stream"))) {
                     return false;
                 }
-                return true; // 100% Undetectable Redirect Killer (External popups aur ads drop honge)
+                return true;
             }
 
             @Override
@@ -151,9 +164,43 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void enableEdgeToEdgeImmersiveMode() {
+        Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false);
+            if (window.getInsetsController() != null) {
+                window.getInsetsController().hide(android.view.WindowInsets.Type.statusBars() | android.view.WindowInsets.Type.navigationBars());
+                window.getInsetsController().setSystemBarsBehavior(android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            }
+        } else {
+            window.getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            );
+        }
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    private void exitImmersiveMode() {
+        Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(true);
+            if (window.getInsetsController() != null) {
+                window.getInsetsController().show(android.view.WindowInsets.Type.statusBars() | android.view.WindowInsets.Type.navigationBars());
+            }
+        } else {
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+        }
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private void setupFloatingButton() {
-        dimRunnable = () -> fabShield.animate().alpha(0.20f).setDuration(500).start();
+        dimRunnable = () -> fabShield.animate().alpha(0.18f).setDuration(600).start();
         resetDimTimer();
 
         fabShield.setOnTouchListener((v, event) -> {
@@ -182,9 +229,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void resetDimTimer() {
-        fabShield.animate().alpha(1.0f).setDuration(200).start();
+        fabShield.animate().alpha(0.95f).setDuration(200).start();
         autoDimHandler.removeCallbacks(dimRunnable);
-        autoDimHandler.postDelayed(dimRunnable, 10000); // 10 second baad transparent hoga
+        autoDimHandler.postDelayed(dimRunnable, 8000);
     }
 
     private void showAdShieldDialog() {
@@ -234,9 +281,9 @@ public class MainActivity extends AppCompatActivity {
             blockedHosts.add("popads.net");
             blockedHosts.add("adsterra.com");
 
-            if (uBlockEnabled) downloadFilterList("https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/badware.txt");
-            if (easyListEnabled) downloadFilterList("https://easylist.to/easylist/easylist.txt");
-            if (privacyEnabled) downloadFilterList("https://easylist.to/easylist/easyprivacy.txt");
+            if (uBlockEnabled) downloadFilterList("https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/badware.txt");[cite: 1]
+            if (easyListEnabled) downloadFilterList("https://easylist.to/easylist/easylist.txt");[cite: 1]
+            if (privacyEnabled) downloadFilterList("https://easylist.to/easylist/easyprivacy.txt");[cite: 1]
         }).start();
     }
 
@@ -263,7 +310,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // 1. Agar video fullscreen me hai toh pehle fullscreen exit karega
         if (customView != null) {
             if (webView.getWebChromeClient() != null) {
                 ((WebChromeClient) webView.getWebChromeClient()).onHideCustomView();
@@ -271,13 +317,11 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // 2. Agar website ke andar navigation history hai toh pichhle page par jayega
         if (webView.canGoBack()) {
             webView.goBack();
             return;
         }
 
-        // 3. Double back dabane par hi app band hoga
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
             return;
